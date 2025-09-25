@@ -1,0 +1,5 @@
+{
+  "name": "Retro Game Generator",
+  "description": "A web application that uses AI to generate playable retro games like Tetris, Pong, or Snake based on a simple text prompt.",
+  "requestFramePermissions": []
+}
