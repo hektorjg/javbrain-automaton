@@ -45,7 +45,7 @@ const GameLoadingScreen: React.FC<GameLoadingScreenProps> = ({ status }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-black text-center p-4">
       <div className="w-16 h-16 border-4 border-dashed border-cyan-400 rounded-full animate-spin mb-6"></div>
-      <p className="text-xl text-pink-500 animate-pulse">{message}</p>
+      <p className="text-xl text-pink-300 animate-pulse font-bold" style={{textShadow: '0 0 10px #f9a8d4'}}>{message}</p>
       <p className="text-sm text-green-400 mt-2">PLEASE STAND BY</p>
     </div>
   );

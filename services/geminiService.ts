@@ -1,6 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+// Get the webhook URL from environment variables
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK;
 
 const getPrompt = (gameName: string) => `
 You are an expert retro game developer. Your task is to generate the complete, self-contained code for a classic retro game based on the user's request.
@@ -19,35 +18,58 @@ You are an expert retro game developer. Your task is to generate the complete, s
 Generate the complete HTML code for the "${gameName}" game now. Your response should contain only the HTML code and nothing else.
 `;
 
+// Function to generate game code via webhook
 export const generateGameCode = async (
   gameName: string,
   onStatusUpdate: (status: string) => void
 ): Promise<string> => {
-  const prompt = getPrompt(gameName);
+  if (!WEBHOOK_URL) {
+    throw new Error("Webhook URL not configured. Please set VITE_N8N_WEBHOOK in your environment variables.");
+  }
 
   try {
     onStatusUpdate('GENERATING_CODE');
-    const response = await ai.models.generateContentStream({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
+    
+    const response = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        gameName: gameName,
+        prompt: getPrompt(gameName)
+      })
     });
 
-    let completeCode = "";
-    for await (const chunk of response) {
-      const chunkText = chunk.text;
-      if (chunkText) {
-        completeCode += chunkText;
-      }
+    if (!response.ok) {
+      throw new Error(`Webhook request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const jsonResponse = await response.json();
+    
+    // Check if the response contains an error
+    if (jsonResponse && jsonResponse.error) {
+      throw new Error(`Webhook error: ${jsonResponse.error}`);
     }
     
-    if (!completeCode.trim()) {
-      throw new Error("AI returned an empty response.");
+    // Extract the game code from the "text" field of the JSON response
+    if (!jsonResponse || typeof jsonResponse.text !== 'string') {
+      throw new Error("Invalid webhook response: missing or invalid 'text' field");
     }
 
-    return completeCode;
+    const gameCode = jsonResponse.text.trim();
+    
+    if (!gameCode) {
+      throw new Error("Webhook returned empty game code");
+    }
+
+    return gameCode;
 
   } catch (error) {
-    console.error("Error generating game code:", error);
-    throw new Error("Failed to generate game. The AI mainframe might be busy. Please try again.");
+    console.error("Error generating game code via webhook:", error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to generate game via webhook. Please try again.");
   }
 };

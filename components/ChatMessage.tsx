@@ -12,7 +12,7 @@ const getAuthorStyles = (author: MessageAuthor) => {
     case MessageAuthor.AI:
       return { prefix: 'ARCADE_AI >', color: 'text-cyan-400' };
     case MessageAuthor.SYSTEM:
-      return { prefix: 'SYSTEM >', color: 'text-pink-500' };
+      return { prefix: 'SYSTEM >', color: 'text-pink-300' };
     default:
       return { prefix: '>', color: 'text-gray-400' };
   }
@@ -22,9 +22,9 @@ const ChatMessageDisplay: React.FC<ChatMessageProps> = ({ message }) => {
   const { prefix, color } = getAuthorStyles(message.author);
 
   return (
-    <div className={`flex items-start text-sm mb-2 ${color} break-words`}>
-      <span className="mr-2 flex-shrink-0">{prefix}</span>
-      <p className="min-w-0">{message.text}</p>
+    <div className={`mb-6 p-3 ${color} leading-loose border-b border-gray-800 last:border-b-0`}>
+      <div className="text-sm font-bold opacity-80 mb-2 whitespace-nowrap">{prefix}</div>
+      <div className="text-sm break-words leading-relaxed">{message.text}</div>
     </div>
   );
 };

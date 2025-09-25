@@ -9,9 +9,11 @@ const GameDisplay: React.FC<GameDisplayProps> = ({ code }) => {
     <iframe
       srcDoc={code}
       title="Generated Retro Game"
-      sandbox="allow-scripts allow-same-origin"
+      sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"
       className="w-full h-full border-0"
-      key={code} 
+      key={code}
+      allowFullScreen
+      style={{ backgroundColor: '#000' }}
     />
   );
 };

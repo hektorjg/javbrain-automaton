@@ -72,31 +72,33 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-black text-green-400 p-4 sm:p-6 md:p-8 flex flex-col font-['Press_Start_2P']">
-      <header className="text-center mb-6 flex-shrink-0">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl text-cyan-400 animate-pulse" style={{ textShadow: '0 0 10px #22d3ee, 0 0 20px #22d3ee' }}>
+    <div className="h-screen bg-black text-green-400 p-2 sm:p-4 md:p-6 lg:p-8 flex flex-col font-['Press_Start_2P'] overflow-hidden">
+      <header className="text-center mb-4 sm:mb-6 flex-shrink-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-cyan-400 animate-pulse" style={{ textShadow: '0 0 10px #22d3ee, 0 0 20px #22d3ee' }}>
           AI RETRO ARCADE
         </h1>
       </header>
 
-      <main className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-8 min-h-0">
+      <main className="flex-grow grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8 min-h-0 overflow-hidden">
         {/* Left Column: Chat Interface (20%) */}
-        <div className="flex flex-col gap-4 min-h-0 md:col-span-1">
-          <div className="flex-grow border-2 border-dashed border-pink-500 p-4 overflow-y-auto bg-black/50 min-h-0">
-            {chatHistory.map(msg => (
-              <ChatMessageDisplay key={msg.id} message={msg} />
-            ))}
-            {isLoading && !gameCode && <LoadingIndicator />}
+        <div className="flex flex-col h-full min-h-0 md:col-span-1">
+          <div className="flex-grow border-2 border-dashed border-pink-500 p-4 overflow-y-auto bg-black/50 min-h-0 mb-4">
+            <div className="space-y-1">
+              {chatHistory.map(msg => (
+                <ChatMessageDisplay key={msg.id} message={msg} />
+              ))}
+              {isLoading && !gameCode && <LoadingIndicator />}
+            </div>
             <div ref={chatEndRef} />
           </div>
-          <footer className="flex-shrink-0">
+          <div className="flex-shrink-0">
             <ChatInput 
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onSubmit={handleSendMessage}
               isLoading={isLoading}
             />
-          </footer>
+          </div>
         </div>
 
         {/* Right Column: Game Display (80%) */}
